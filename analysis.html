@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Titiwangsa Bridge Analysis – Smart Bridge Malaysia</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+  --primary: #1e40af;
+  --secondary: #0ea5e9;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1e293b;
+  --radius: 12px;
+  --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  color: var(--gray-800);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* HEADER & NAVBAR */
+.header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.logo-icon {
+  background: var(--primary);
+  color: white;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.logo-text h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  line-height: 1.2;
+}
+
+.logo-text p {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.nav-link {
+  color: var(--gray-700);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.3s;
+}
+
+.nav-link:hover {
+  color: var(--primary);
+}
+
+.nav-link.active {
+  color: var(--primary);
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--gray-100);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.user-icon {
+  color: var(--primary);
+  font-size: 1.1rem;
+}
+
+/* BRIDGE INFO HEADER */
+.bridge-header-section {
+  background: white;
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin: 1.5rem 0;
+  box-shadow: var(--shadow);
+}
+
+.bridge-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.bridge-title h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+
+.bridge-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, var(--primary), #3b82f6);
+  color: white;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.bridge-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--gray-200);
+}
+
+.detail-box {
+  text-align: center;
+}
+
+.detail-label {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  margin-bottom: 0.5rem;
+}
+
+.detail-value {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+/* HEALTH RATING SECTION - STATIC */
+.rating-section {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.rating-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.rating-header h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin-bottom: 0.5rem;
+}
+
+.rating-header p {
+  color: var(--gray-600);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.rating-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.rating-visual {
+  text-align: center;
+  flex: 1;
+  min-width: 300px;
+}
+
+.rating-score {
+  font-size: 5rem;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.rating-grade {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--success);
+  margin-bottom: 1rem;
+}
+
+.rating-desc {
+  color: var(--gray-600);
+  margin-top: 1rem;
+  font-size: 1rem;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.rating-bar {
+  height: 20px;
+  background: var(--gray-200);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 1.5rem 0;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.rating-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--success), #22c55e);
+  width: 92%;
+}
+
+.rating-details {
+  flex: 1;
+  min-width: 300px;
+}
+
+.rating-details h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  color: var(--gray-800);
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  color: var(--gray-600);
+}
+
+.detail-value {
+  font-weight: 600;
+}
+
+/* SENSOR SECTIONS - DYNAMIC */
+.sensor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.sensor-card {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sensor-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.sensor-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.sensor-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-right: 1rem;
+  color: white;
+}
+
+.accelerometer .sensor-icon {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+}
+
+.inclinometer .sensor-icon {
+  background: linear-gradient(135deg, #3b82f6, #0ea5e9);
+}
+
+.strain-sensor .sensor-icon {
+  background: linear-gradient(135deg, #8b5cf6, #a855f7);
+}
+
+.sensor-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.sensor-header p {
+  color: var(--gray-600);
+  font-size: 0.875rem;
+}
+
+.sensor-data {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.sensor-value {
+  text-align: center;
+  flex: 1;
+}
+
+.value-number {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.value-unit {
+  font-size: 1rem;
+  color: var(--gray-600);
+}
+
+.sensor-trend {
+  text-align: center;
+  flex: 1;
+}
+
+.trend-label {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  margin-bottom: 0.5rem;
+}
+
+.trend-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.trend-up {
+  color: var(--danger);
+}
+
+.trend-down {
+  color: var(--success);
+}
+
+.trend-stable {
+  color: var(--warning);
+}
+
+.sensor-progress {
+  margin-top: 1.5rem;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.progress-bar {
+  height: 10px;
+  background: var(--gray-200);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 5px;
+}
+
+/* CHART SECTION */
+.chart-section {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.chart-header h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.chart-container {
+  height: 400px;
+  position: relative;
+}
+
+/* STATUS INDICATOR */
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.status-green {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.status-yellow {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-red {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* ALERTS SECTION */
+.alerts-section {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.alerts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.alerts-header h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.alert-count {
+  background: var(--gray-100);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.alert-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.alert-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 8px;
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+}
+
+.alert-item.danger {
+  background: #fee2e2;
+  border-left-color: #ef4444;
+}
+
+.alert-item.safe {
+  background: #dcfce7;
+  border-left-color: #10b981;
+}
+
+.alert-icon {
+  margin-right: 1rem;
+  font-size: 1.2rem;
+}
+
+.alert-danger .alert-icon { color: #ef4444; }
+.alert-warning .alert-icon { color: #f59e0b; }
+.alert-safe .alert-icon { color: #10b981; }
+
+.alert-content h4 {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.alert-content p {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+}
+
+/* FOOTER */
+footer {
+  background: var(--gray-800);
+  color: white;
+  padding: 3rem 1rem;
+  margin-top: 4rem;
+}
+
+.footer-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.footer-links {
+  display: flex;
+  gap: 2rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer-links a {
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover {
+  color: white;
+}
+
+.footer-info {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  max-width: 800px;
+  line-height: 1.6;
+}
+
+.footer-copyright {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  margin-top: 2rem;
+  text-align: center;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .nav-links {
+    gap: 1rem;
+  }
+  
+  .rating-content {
+    flex-direction: column;
+  }
+  
+  .sensor-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .chart-container {
+    height: 300px;
+  }
+  
+  .bridge-title {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .bridge-details-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+<!-- HEADER -->
+<header class="header">
+  <div class="container">
+    <div class="header-content">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-bridge"></i>
+        </div>
+        <div class="logo-text">
+          <h1>Smart Bridge Malaysia</h1>
+          <p>National Structural Health Monitoring</p>
+        </div>
+      </a>
+      
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">MAP OVERVIEW</a>
+        <a href="analysis.html" class="nav-link active">BRIDGE ANALYSIS</a>
+        <a href="about.html" class="nav-link">ABOUT</a>
+      </div>
+      
+      <div class="header-actions">
+        <div class="user-info">
+          <i class="fas fa-user-circle user-icon"></i>
+          <span>Profile</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <!-- BRIDGE INFO HEADER -->
+  <section class="bridge-header-section">
+    <div class="bridge-title">
+      <h1>Titiwangsa Smart Bridge (Prototype)</h1>
+      <div class="bridge-badge">
+        <i class="fas fa-star"></i>
+        <span>SMART PROTOTYPE</span>
+      </div>
+    </div>
+    
+    <p style="color: var(--gray-600); margin-bottom: 1rem;">
+      Located in Kuala Lumpur, this is Malaysia's first fully instrumented smart bridge with real-time structural health monitoring systems.
+    </p>
+    
+    <div class="bridge-details-grid">
+      <div class="detail-box">
+        <div class="detail-label">Bridge ID</div>
+        <div class="detail-value">SB-MY-042</div>
+      </div>
+      <div class="detail-box">
+        <div class="detail-label">Location</div>
+        <div class="detail-value">Kuala Lumpur</div>
+      </div>
+      <div class="detail-box">
+        <div class="detail-label">Year Built</div>
+        <div class="detail-value">2023</div>
+      </div>
+      <div class="detail-box">
+        <div class="detail-label">Length</div>
+        <div class="detail-value">0.8 km</div>
+      </div>
+      <div class="detail-box">
+        <div class="detail-label">Traffic</div>
+        <div class="detail-value">Medium</div>
+      </div>
+      <div class="detail-box">
+        <div class="detail-label">Monitoring Since</div>
+        <div class="detail-value">Jan 2024</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HEALTH RATING SECTION - STATIC -->
+  <section class="rating-section">
+    <div class="rating-header">
+      <h2>Bridge Health Rating</h2>
+      <p>Overall structural health assessment based on comprehensive sensor data analysis</p>
+    </div>
+    
+    <div class="rating-content">
+      <div class="rating-visual">
+        <div class="rating-score" id="ratingScore">92%</div>
+        <div class="rating-grade" id="ratingGrade">A - Excellent Condition</div>
+        
+        <div class="rating-bar">
+          <div class="rating-fill" id="ratingFill"></div>
+        </div>
+        
+        <p class="rating-desc" id="ratingDesc">
+          The bridge is operating within safe design limits with no critical issues detected. 
+          Regular maintenance schedule is sufficient for continued safe operation.
+        </p>
+      </div>
+      
+      <div class="rating-details">
+        <h3>Rating Details</h3>
+        <div class="detail-item">
+          <span class="detail-label">Safety Margin</span>
+          <span class="detail-value">42% above threshold</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Last Inspection</span>
+          <span class="detail-value">15 March 2025</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Next Scheduled</span>
+          <span class="detail-value">15 September 2025</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Maintenance Level</span>
+          <span class="detail-value">Routine only</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Predicted Lifespan</span>
+          <span class="detail-value">25+ years</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ALERTS SECTION -->
+  <section class="alerts-section">
+    <div class="alerts-header">
+      <h3>Recent Alerts & Notifications</h3>
+      <div class="alert-count">2 Active</div>
+    </div>
+    
+    <div class="alert-list">
+      <div class="alert-item">
+        <div class="alert-icon alert-warning">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="alert-content">
+          <h4>Vibration Spike Detected</h4>
+          <p>Minor vibration increase detected on April 12, 2025 at 14:30. No structural impact.</p>
+        </div>
+      </div>
+      
+      <div class="alert-item safe">
+        <div class="alert-icon alert-safe">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="alert-content">
+          <h4>Monthly System Check Completed</h4>
+          <p>All sensors and communication systems verified operational on April 10, 2025.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SENSOR DATA SECTIONS - DYNAMIC -->
+  <div class="sensor-grid">
+    <!-- Accelerometer Card -->
+    <div class="sensor-card accelerometer">
+      <div class="sensor-header">
+        <div class="sensor-icon">
+          <i class="fas fa-wave-square"></i>
+        </div>
+        <div>
+          <h3>Accelerometer</h3>
+          <p>Vibration & Structural Movement</p>
+        </div>
+      </div>
+      
+      <div class="sensor-data">
+        <div class="sensor-value">
+          <div class="value-number" id="vibVal">3.2</div>
+          <div class="value-unit">Hz</div>
+        </div>
+        <div class="sensor-trend">
+          <div class="trend-label">7-Day Trend</div>
+          <div class="trend-value trend-stable" id="vibTrend">Stable</div>
+        </div>
+      </div>
+      
+      <div class="sensor-progress">
+        <div class="progress-label">
+          <span>Vibration Level</span>
+          <span id="vibLevel">Normal</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="vibBar" style="width: 32%; background: #10b981;"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Inclinometer Card -->
+    <div class="sensor-card inclinometer">
+      <div class="sensor-header">
+        <div class="sensor-icon">
+          <i class="fas fa-ruler-combined"></i>
+        </div>
+        <div>
+          <h3>Inclinometer</h3>
+          <p>Tilt & Angular Displacement</p>
+        </div>
+      </div>
+      
+      <div class="sensor-data">
+        <div class="sensor-value">
+          <div class="value-number" id="tiltVal">0.72</div>
+          <div class="value-unit">Degrees</div>
+        </div>
+        <div class="sensor-trend">
+          <div class="trend-label">Change Rate</div>
+          <div class="trend-value trend-stable" id="tiltTrend">0.02</div>
+          <div class="value-unit">°/day</div>
+        </div>
+      </div>
+      
+      <div class="sensor-progress">
+        <div class="progress-label">
+          <span>Tilt Deviation</span>
+          <span id="tiltDeviation">Within Limits</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="tiltBar" style="width: 18%; background: #3b82f6;"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Strain Sensor Card -->
+    <div class="sensor-card strain-sensor">
+      <div class="sensor-header">
+        <div class="sensor-icon">
+          <i class="fas fa-expand-alt"></i>
+        </div>
+        <div>
+          <h3>Fiber Optic Sensor</h3>
+          <p>Internal Strain & Stress</p>
+        </div>
+      </div>
+      
+      <div class="sensor-data">
+        <div class="sensor-value">
+          <div class="value-number" id="strainVal">62.4</div>
+          <div class="value-unit">Microstrain</div>
+        </div>
+        <div class="sensor-trend">
+          <div class="trend-label">Crack Risk</div>
+          <div class="trend-value" id="crackRisk">Low</div>
+        </div>
+      </div>
+      
+      <div class="sensor-progress">
+        <div class="progress-label">
+          <span>Stress Level</span>
+          <span id="stressLevel">Moderate</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="strainBar" style="width: 62%; background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHART SECTION -->
+  <section class="chart-section">
+    <div class="chart-header">
+      <h3>Real-Time Sensor Correlations</h3>
+      <div class="status-indicator status-green" id="chartStatus">
+        <i class="fas fa-check-circle"></i>
+        <span style="margin-left: 0.5rem;">Live Data Streaming</span>
+      </div>
+    </div>
+    
+    <div class="chart-container">
+      <canvas id="sensorChart"></canvas>
+    </div>
+    
+    <div style="display: flex; justify-content: center; margin-top: 1.5rem; gap: 1rem;">
+      <button class="btn btn-outline" id="chart1Day">1 Day</button>
+      <button class="btn btn-outline" id="chart7Days">7 Days</button>
+      <button class="btn btn-primary" id="chart30Days">30 Days</button>
+      <button class="btn btn-outline" id="chartAll">All Data</button>
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-content">
+    <div class="footer-logo">
+      <i class="fas fa-bridge"></i>
+      <span>Smart Bridge Malaysia</span>
+    </div>
+    
+    <div class="footer-links">
+      <a href="index.html">Dashboard</a>
+      <a href="analysis.html">Bridge Analysis</a>
+      <a href="about.html">About Project</a>
+      <a href="#">API Documentation</a>
+      <a href="#">Contact Support</a>
+    </div>
+    
+    <div class="footer-info">
+      This monitoring system is developed in partnership with Universiti Teknologi Malaysia 
+      to enhance national infrastructure resilience and support sustainable development goals.
+    </div>
+    
+    <div class="footer-copyright">
+      © 2025 Smart Bridge Malaysia • SDG 9: Industry, Innovation and Infrastructure
+    </div>
+  </div>
+</footer>
+
+<script>
+// Initialize data arrays
+let strain = [], tilt = [], vib = [];
+const maxDataPoints = 30;
+
+// Generate random data
+function getRandomValue(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+// Calculate trend from array
+function calculateTrend(dataArray) {
+  if (dataArray.length < 2) return 0;
+  return dataArray[dataArray.length - 1] - dataArray[0];
+}
+
+// Format time for last updated
+function updateTime() {
+  const now = new Date();
+  const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+  document.getElementById('lastUpdated').textContent = `${timeString}`;
+}
+
+// Update all sensor data
+function updateSensorData() {
+  // Add new random data points
+  strain.push(getRandomValue(50, 75));
+  tilt.push(getRandomValue(0.5, 1.0));
+  vib.push(getRandomValue(2.5, 5.5));
+  
+  // Keep arrays at max length
+  if (strain.length > maxDataPoints) {
+    strain.shift();
+    tilt.shift();
+    vib.shift();
+  }
+  
+  // Get latest values
+  const currentStrain = strain[strain.length - 1];
+  const currentTilt = tilt[tilt.length - 1];
+  const currentVib = vib[vib.length - 1];
+  
+  // Calculate trends
+  const strainTrend = calculateTrend(strain.slice(-7));
+  const tiltTrend = calculateTrend(tilt.slice(-7));
+  const vibTrend = calculateTrend(vib.slice(-7));
+  
+  // Update Accelerometer values
+  document.getElementById('vibVal').textContent = currentVib.toFixed(2);
+  document.getElementById('vibTrend').textContent = vibTrend > 0.2 ? "Increasing" : vibTrend < -0.2 ? "Decreasing" : "Stable";
+  document.getElementById('vibTrend').className = `trend-value ${vibTrend > 0.2 ? 'trend-up' : vibTrend < -0.2 ? 'trend-down' : 'trend-stable'}`;
+  
+  // Update vibration progress bar and level
+  const vibPercent = Math.min(100, (currentVib / 8) * 100);
+  document.getElementById('vibBar').style.width = `${vibPercent}%`;
+  document.getElementById('vibLevel').textContent = vibPercent < 40 ? "Low" : vibPercent < 70 ? "Normal" : "High";
+  document.getElementById('vibBar').style.background = vibPercent < 40 ? "#10b981" : vibPercent < 70 ? "#f59e0b" : "#ef4444";
+  
+  // Update Inclinometer values
+  document.getElementById('tiltVal').textContent = currentTilt.toFixed(3);
+  document.getElementById('tiltTrend').textContent = (tiltTrend * 24).toFixed(3);
+  document.getElementById('tiltTrend').className = `trend-value ${tiltTrend > 0.01 ? 'trend-up' : tiltTrend < -0.01 ? 'trend-down' : 'trend-stable'}`;
+  
+  // Update tilt progress bar and deviation
+  const tiltPercent = Math.min(100, (currentTilt / 1.5) * 100);
+  document.getElementById('tiltBar').style.width = `${tiltPercent}%`;
+  document.getElementById('tiltDeviation').textContent = tiltPercent < 40 ? "Within Limits" : tiltPercent < 80 ? "Moderate" : "High";
+  document.getElementById('tiltBar').style.background = tiltPercent < 40 ? "#3b82f6" : tiltPercent < 80 ? "#f59e0b" : "#ef4444";
+  
+  // Update Strain Sensor values
+  document.getElementById('strainVal').textContent = currentStrain.toFixed(1);
+  
+  // Calculate crack risk based on strain and trend
+  const crackRiskValue = Math.min(100, (currentStrain - 50) * 2 + Math.abs(strainTrend) * 10);
+  let crackRiskText = "Low";
+  if (crackRiskValue > 60) crackRiskText = "High";
+  else if (crackRiskValue > 30) crackRiskText = "Medium";
+  
+  document.getElementById('crackRisk').textContent = crackRiskText;
+  document.getElementById('crackRisk').className = `trend-value ${crackRiskValue > 60 ? 'trend-up' : crackRiskValue > 30 ? 'trend-stable' : 'trend-down'}`;
+  
+  // Update strain progress bar and stress level
+  const strainPercent = Math.min(100, ((currentStrain - 40) / 40) * 100);
+  document.getElementById('strainBar').style.width = `${strainPercent}%`;
+  document.getElementById('stressLevel').textContent = strainPercent < 40 ? "Low" : strainPercent < 70 ? "Moderate" : "High";
+  
+  // Update chart
+  updateChart();
+  
+  // Update timestamp
+  updateTime();
+}
+
+// Chart.js initialization
+let sensorChart = null;
+
+function initializeChart() {
+  const ctx = document.getElementById('sensorChart').getContext('2d');
+  
+  sensorChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: Array.from({length: maxDataPoints}, (_, i) => `T-${maxDataPoints - i}s`),
+      datasets: [
+        {
+          label: 'Strain (με)',
+          data: strain,
+          borderColor: '#8b5cf6',
+          backgroundColor: 'rgba(139, 92, 246, 0.1)',
+          borderWidth: 2,
+          tension: 0.4,
+          fill: true
+        },
+        {
+          label: 'Tilt (°)',
+          data: tilt,
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+          borderWidth: 2,
+          tension: 0.4,
+          fill: true
+        },
+        {
+          label: 'Vibration (Hz)',
+          data: vib,
+          borderColor: '#ef4444',
+          backgroundColor: 'rgba(239, 68, 68, 0.1)',
+          borderWidth: 2,
+          tension: 0.4,
+          fill: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: {
+            padding: 20,
+            usePointStyle: true,
+          }
+        },
+        tooltip: {
+          mode: 'index',
+          intersect: false
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'Time'
+          }
+        },
+        y: {
+          beginAtZero: false,
+          grid: {
+            color: 'rgba(0, 0, 0, 0.05)'
+          }
+        }
+      },
+      interaction: {
+        intersect: false,
+        mode: 'nearest'
+      }
+    }
+  });
+}
+
+// Update chart with new data
+function updateChart() {
+  if (!sensorChart) {
+    initializeChart();
+    return;
+  }
+  
+  // Update data
+  sensorChart.data.datasets[0].data = strain;
+  sensorChart.data.datasets[1].data = tilt;
+  sensorChart.data.datasets[2].data = vib;
+  
+  // Update chart
+  sensorChart.update('none');
+}
+
+// Initialize with some data
+function initializeData() {
+  for (let i = 0; i < maxDataPoints; i++) {
+    strain.push(getRandomValue(50, 75));
+    tilt.push(getRandomValue(0.5, 1.0));
+    vib.push(getRandomValue(2.5, 5.5));
+  }
+  
+  updateSensorData();
+  updateTime();
+}
+
+// Chart time range buttons
+document.getElementById('chart1Day').addEventListener('click', () => {
+  alert("Showing data for 1 day");
+  document.getElementById('chartStatus').innerHTML = '<i class="fas fa-chart-line"></i><span style="margin-left: 0.5rem;">1 Day View</span>';
+});
+
+document.getElementById('chart7Days').addEventListener('click', () => {
+  alert("Showing data for 7 days");
+  document.getElementById('chartStatus').innerHTML = '<i class="fas fa-chart-line"></i><span style="margin-left: 0.5rem;">7 Days View</span>';
+});
+
+document.getElementById('chart30Days').addEventListener('click', () => {
+  alert("Showing data for 30 days");
+  document.getElementById('chartStatus').innerHTML = '<i class="fas fa-chart-line"></i><span style="margin-left: 0.5rem;">30 Days View</span>';
+});
+
+document.getElementById('chartAll').addEventListener('click', () => {
+  alert("Showing all available data");
+  document.getElementById('chartStatus').innerHTML = '<i class="fas fa-chart-line"></i><span style="margin-left: 0.5rem;">All Data View</span>';
+});
+
+// Add button styles
+const style = document.createElement('style');
+style.textContent = `
+.btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #1e3a8a;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--gray-700);
+  border: 1px solid var(--gray-300);
+}
+
+.btn-outline:hover {
+  background: var(--gray-50);
+  border-color: var(--gray-400);
+}
+`;
+document.head.appendChild(style);
+
+// Start updating sensor data every 3 seconds
+initializeData();
+setInterval(updateSensorData, 3000);
+</script>
+</body>
+</html>

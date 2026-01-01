@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Bridge Malaysia - Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+  <style>
+    :root {
+      --primary: #1e40af;
+      --secondary: #0ea5e9;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1e293b;
+      --radius: 12px;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+      color: var(--gray-800);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    /* HEADER & NAVBAR */
+    .header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      background: var(--primary);
+      color: white;
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .logo-text h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      line-height: 1.2;
+    }
+
+    .logo-text p {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: var(--gray-700);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.5rem 0;
+      position: relative;
+      transition: color 0.3s;
+    }
+
+    .nav-link:hover {
+      color: var(--primary);
+    }
+
+    .nav-link.active {
+      color: var(--primary);
+    }
+
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--gray-100);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .user-icon {
+      color: var(--primary);
+      font-size: 1.1rem;
+    }
+
+    /* HERO SECTION */
+    .hero {
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: white;
+      border-radius: var(--radius);
+      padding: 3rem 2rem;
+      margin: 2rem 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      opacity: 0.2;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      max-width: 700px;
+      margin: 0 auto 2rem;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      font-weight: 500;
+    }
+
+    /* SEARCH SECTION */
+    .search-section {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .search-container {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-600);
+      font-size: 1.2rem;
+    }
+
+    #bridgeSearch {
+      width: 100%;
+      padding: 1.2rem 1.2rem 1.2rem 3.5rem;
+      border: 2px solid var(--gray-200);
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.3s;
+      background: var(--gray-50);
+    }
+
+    #bridgeSearch:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .search-hint {
+      text-align: center;
+      margin-top: 0.75rem;
+      color: var(--gray-600);
+      font-size: 0.875rem;
+    }
+
+    /* MAP SECTION */
+    .map-section {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gray-800);
+    }
+
+    .section-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #1e3a8a;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--gray-700);
+      border: 1px solid var(--gray-300);
+    }
+
+    .btn-outline:hover {
+      background: var(--gray-50);
+      border-color: var(--gray-400);
+    }
+
+    #map {
+      height: 500px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      margin-top: 1rem;
+    }
+
+    /* LEGEND */
+    .legend {
+      display: flex;
+      gap: 2rem;
+      background: white;
+      padding: 1.2rem 1.5rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .legend-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+    }
+
+    .legend-safe { background: var(--success); }
+    .legend-warning { background: var(--warning); }
+    .legend-danger { background: var(--danger); }
+
+    .legend-label {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .legend-value {
+      color: var(--gray-600);
+      font-size: 0.875rem;
+    }
+
+    /* BRIDGE LIST */
+    .bridge-list-section {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .bridge-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .bridge-card {
+      background: var(--gray-50);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      border-left: 4px solid var(--success);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .bridge-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      background: white;
+    }
+
+    .bridge-card.warning {
+      border-left-color: var(--warning);
+    }
+
+    .bridge-card.danger {
+      border-left-color: var(--danger);
+    }
+
+    .bridge-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .bridge-name {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--gray-800);
+    }
+
+    .bridge-status {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .status-safe {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-warning {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-danger {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .bridge-details {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .detail-label {
+      color: var(--gray-600);
+    }
+
+    .detail-value {
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+
+    .bridge-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .view-btn {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .view-btn:hover {
+      text-decoration: underline;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--gray-800);
+      color: white;
+      padding: 3rem 1rem;
+      margin-top: 4rem;
+    }
+
+    .footer-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .footer-links a {
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    .footer-info {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.9rem;
+      max-width: 800px;
+      line-height: 1.6;
+    }
+
+    .footer-copyright {
+      color: #94a3b8;
+      font-size: 0.875rem;
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .nav-links {
+        gap: 1rem;
+      }
+      
+      .hero h1 {
+        font-size: 2rem;
+      }
+      
+      .hero-stats {
+        gap: 1.5rem;
+      }
+      
+      .stat-value {
+        font-size: 2rem;
+      }
+      
+      .bridge-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      #map {
+        height: 400px;
+      }
+      
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .section-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="container">
+    <div class="header-content">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-bridge"></i>
+        </div>
+        <div class="logo-text">
+          <h1>Smart Bridge Malaysia</h1>
+          <p>National Structural Health Monitoring</p>
+        </div>
+      </a>
+      
+      <div class="nav-links">
+        <a href="index.html" class="nav-link active">MAP OVERVIEW</a>
+        <a href="analysis.html" class="nav-link">BRIDGE ANALYSIS</a>
+        <a href="about.html" class="nav-link">ABOUT</a>
+      </div>
+      
+      <div class="header-actions">
+        <div class="user-info">
+          <i class="fas fa-user-circle user-icon"></i>
+          <span>Profile</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>National Smart Bridge Monitoring System</h1>
+      <p>Real-time structural health monitoring across Malaysia's critical infrastructure. Aligned with SDG 9 for resilient infrastructure.</p>
+      
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-value">24/7</div>
+          <div class="stat-label">Real-Time Monitoring</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">156</div>
+          <div class="stat-label">Bridges Tracked</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">98.7%</div>
+          <div class="stat-label">Operational Uptime</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">12</div>
+          <div class="stat-label">States Covered</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEARCH SECTION -->
+  <section class="search-section">
+    <div class="search-container">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" id="bridgeSearch" placeholder="Search for a bridge by name, location, or status...">
+    </div>
+    <p class="search-hint">Try searching for "Penang", "Kuala Lumpur", "Warning", or "Safe"</p>
+  </section>
+
+  <!-- MAP SECTION -->
+  <section class="map-section">
+    <div class="section-header">
+      <h2>National Bridge Network Map</h2>
+      <div class="section-actions">
+        <button class="btn btn-outline" id="refreshMap">
+          <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+        <button class="btn btn-primary" id="focusPrototype">
+          <i class="fas fa-crosshairs"></i> Focus on Prototype
+        </button>
+      </div>
+    </div>
+    
+    <div id="map"></div>
+  </section>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-dot legend-safe"></div>
+      <div>
+        <div class="legend-label">SAFE</div>
+        <div class="legend-value">Operating normally</div>
+      </div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot legend-warning"></div>
+      <div>
+        <div class="legend-label">WARNING</div>
+        <div class="legend-value">Needs attention</div>
+      </div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot legend-danger"></div>
+      <div>
+        <div class="legend-label">DANGEROUS</div>
+        <div class="legend-value">Immediate action required</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BRIDGE LIST -->
+  <section class="bridge-list-section">
+    <div class="section-header">
+      <h2>Monitored Bridges</h2>
+      <div class="section-actions">
+        <button class="btn btn-outline" id="filterAll">All Bridges</button>
+        <button class="btn btn-outline" id="filterWarning">Warning Only</button>
+        <button class="btn btn-outline" id="filterDanger">Danger Only</button>
+      </div>
+    </div>
+    
+    <div class="bridge-grid" id="bridgeGrid">
+      <!-- Bridge cards will be dynamically inserted here -->
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-content">
+    <div class="footer-logo">
+      <i class="fas fa-bridge"></i>
+      <span>Smart Bridge Malaysia</span>
+    </div>
+    
+    <div class="footer-links">
+      <a href="index.html">Dashboard</a>
+      <a href="analysis.html">Bridge Analysis</a>
+      <a href="about.html">About Project</a>
+      <a href="#">API Documentation</a>
+      <a href="#">Contact Support</a>
+    </div>
+    
+    <div class="footer-info">
+      This monitoring system is developed in partnership with Universiti Teknologi Malaysia 
+      to enhance national infrastructure resilience and support sustainable development goals.
+    </div>
+    
+    <div class="footer-copyright">
+      © 2025 Smart Bridge Malaysia • SDG 9: Industry, Innovation and Infrastructure
+    </div>
+  </div>
+</footer>
+
+<script>
+// Bridge data
+const bridges = [
+  { 
+    name: "Penang Bridge", 
+    lat: 5.3540, 
+    lng: 100.3450, 
+    id: "penang",
+    location: "Penang, Malaysia",
+    year: 1985,
+    length: "13.5 km",
+    traffic: "High"
+  },
+  { 
+    name: "Second Penang Bridge", 
+    lat: 5.2930, 
+    lng: 100.3020, 
+    id: "penang2",
+    location: "Penang, Malaysia",
+    year: 2014,
+    length: "24 km",
+    traffic: "Medium"
+  },
+  { 
+    name: "Sultan Mahmud Bridge", 
+    lat: 5.3302, 
+    lng: 103.1409, 
+    id: "terengganu",
+    location: "Kuala Terengganu",
+    year: 1990,
+    length: "1.2 km",
+    traffic: "Medium"
+  },
+  { 
+    name: "Titiwangsa Smart Bridge (Prototype)", 
+    lat: 4.5870, 
+    lng: 101.5830, 
+    id: "prototype",
+    location: "Kuala Lumpur",
+    year: 2023,
+    length: "0.8 km",
+    traffic: "Low",
+    active: true
+  },
+  { 
+    name: "Sultan Ismail Bridge", 
+    lat: 6.1240, 
+    lng: 100.3670, 
+    id: "kedah",
+    location: "Kedah",
+    year: 1978,
+    length: "2.1 km",
+    traffic: "Medium"
+  },
+  { 
+    name: "Johor–Singapore Causeway", 
+    lat: 1.4520, 
+    lng: 103.7650, 
+    id: "johor",
+    location: "Johor Bahru",
+    year: 1924,
+    length: "1.05 km",
+    traffic: "Very High"
+  }
+];
+
+// Simulated bridge statuses
+const bridgeStatus = {
+  "penang": "SAFE",
+  "penang2": "WARNING",
+  "terengganu": "SAFE",
+  "prototype": "SAFE", // Will be updated live from localStorage
+  "kedah": "DANGEROUS",
+  "johor": "WARNING"
+};
+
+// Initialize map
+const map = L.map('map').setView([4.2105, 104.9758], 6);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+// Custom markers
+const greenIcon = L.icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34]
+});
+
+const yellowIcon = L.icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34]
+});
+
+const redIcon = L.icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34]
+});
+
+function getIcon(status) {
+  return status === "SAFE" ? greenIcon : status === "WARNING" ? yellowIcon : redIcon;
+}
+
+const markers = {};
+const bridgeCards = {};
+
+// Function to navigate to analysis page with Titiwangsa Bridge data
+function navigateToTitiwangsaAnalysis() {
+  // Store the Titiwangsa Bridge data in localStorage
+  const titiwangsaBridge = bridges.find(b => b.id === "prototype");
+  localStorage.setItem('selectedBridge', JSON.stringify(titiwangsaBridge));
+  
+  // Redirect to analysis page
+  window.location.href = "analysis.html";
+}
+
+// Create markers and cards for each bridge
+bridges.forEach(bridge => {
+  const status = bridge.id === "prototype" ? (localStorage.getItem("status") || "SAFE") : bridgeStatus[bridge.id];
+  
+  // Create map marker
+  const icon = getIcon(status);
+  const marker = L.marker([bridge.lat, bridge.lng], { icon })
+    .addTo(map)
+    .bindPopup(`
+      <div style="min-width: 220px;">
+        <h3 style="margin: 0 0 8px; color: #1e293b;">${bridge.name}</h3>
+        <p style="margin: 0 0 12px; color: #475569; font-size: 14px;">${bridge.location}</p>
+        <div style="display: flex; align-items: center; margin-bottom: 12px;">
+          <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: ${status === 'SAFE' ? '#10b981' : status === 'WARNING' ? '#f59e0b' : '#ef4444'}; margin-right: 8px;"></span>
+          <span style="font-weight: 600; color: ${status === 'SAFE' ? '#10b981' : status === 'WARNING' ? '#f59e0b' : '#ef4444'};">Status: ${status}</span>
+        </div>
+        ${bridge.id === "prototype" ? 
+          `<button onclick="navigateToTitiwangsaAnalysis()" style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; width: 100%;">
+            View Live Analysis <i class="fas fa-arrow-right" style="margin-left: 6px;"></i>
+          </button>` : 
+          `<button style="background: #94a3b8; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; width: 100%;" disabled>
+            Analysis Available Soon
+          </button>`
+        }
+      </div>
+    `);
+  
+  markers[bridge.id] = marker;
+  
+  // Create bridge card
+  const card = document.createElement('div');
+  card.className = `bridge-card ${status === 'WARNING' ? 'warning' : status === 'DANGEROUS' ? 'danger' : ''}`;
+  card.dataset.id = bridge.id;
+  card.dataset.status = status;
+  
+  card.innerHTML = `
+    <div class="bridge-header">
+      <div class="bridge-name">${bridge.name}</div>
+      <div class="bridge-status ${status === 'SAFE' ? 'status-safe' : status === 'WARNING' ? 'status-warning' : 'status-danger'}">${status}</div>
+    </div>
+    
+    <div class="bridge-details">
+      <div>
+        <div class="detail-label">Location</div>
+        <div class="detail-value">${bridge.location}</div>
+      </div>
+      <div>
+        <div class="detail-label">Year Built</div>
+        <div class="detail-value">${bridge.year}</div>
+      </div>
+    </div>
+    
+    <div class="bridge-details">
+      <div>
+        <div class="detail-label">Length</div>
+        <div class="detail-value">${bridge.length}</div>
+      </div>
+      <div>
+        <div class="detail-label">Traffic</div>
+        <div class="detail-value">${bridge.traffic}</div>
+      </div>
+    </div>
+    
+    <div class="bridge-footer">
+      <span>Last updated: Just now</span>
+      ${bridge.id === "prototype" ? 
+        `<a href="analysis.html" class="view-btn" onclick="navigateToTitiwangsaAnalysis(); return false;">
+          View Live Analysis <i class="fas fa-chevron-right"></i>
+        </a>` : 
+        `<span class="view-btn" style="color: #94a3b8; cursor: default;">
+          Coming Soon <i class="fas fa-clock"></i>
+        </span>`
+      }
+    </div>
+  `;
+  
+  if (bridge.id === "prototype") {
+    card.addEventListener('click', () => {
+      navigateToTitiwangsaAnalysis();
+    });
+  }
+  
+  bridgeCards[bridge.id] = card;
+  document.getElementById('bridgeGrid').appendChild(card);
+});
+
+// Search functionality
+document.getElementById('bridgeSearch').addEventListener('input', function() {
+  const query = this.value.toLowerCase().trim();
+  
+  if (!query) {
+    // Show all bridges if search is empty
+    Object.values(bridgeCards).forEach(card => {
+      card.style.display = 'block';
+    });
+    return;
+  }
+  
+  bridges.forEach(bridge => {
+    const card = bridgeCards[bridge.id];
+    const bridgeText = `${bridge.name} ${bridge.location} ${bridgeStatus[bridge.id]}`.toLowerCase();
+    
+    if (bridgeText.includes(query)) {
+      card.style.display = 'block';
+      // Highlight search term
+      const regex = new RegExp(`(${query})`, 'gi');
+      const nameElement = card.querySelector('.bridge-name');
+      nameElement.innerHTML = bridge.name.replace(regex, '<mark>$1</mark>');
+    } else {
+      card.style.display = 'none';
+    }
+  });
+});
+
+// Filter buttons
+document.getElementById('filterAll').addEventListener('click', () => {
+  Object.values(bridgeCards).forEach(card => {
+    card.style.display = 'block';
+  });
+});
+
+document.getElementById('filterWarning').addEventListener('click', () => {
+  Object.values(bridgeCards).forEach(card => {
+    card.style.display = card.dataset.status === 'WARNING' ? 'block' : 'none';
+  });
+});
+
+document.getElementById('filterDanger').addEventListener('click', () => {
+  Object.values(bridgeCards).forEach(card => {
+    card.style.display = card.dataset.status === 'DANGEROUS' ? 'block' : 'none';
+  });
+});
+
+// Map buttons
+document.getElementById('refreshMap').addEventListener('click', () => {
+  map.setView([4.2105, 104.9758], 6);
+});
+
+document.getElementById('focusPrototype').addEventListener('click', () => {
+  const prototype = bridges.find(b => b.id === 'prototype');
+  if (prototype) {
+    map.setView([prototype.lat, prototype.lng], 13);
+    markers.prototype.openPopup();
+  }
+});
+
+// Live update for prototype bridge status
+setInterval(() => {
+  const liveStatus = localStorage.getItem("status") || "SAFE";
+  
+  // Update prototype marker
+  if (markers.prototype) {
+    markers.prototype.setIcon(getIcon(liveStatus));
+    
+    // Update prototype card
+    if (bridgeCards.prototype) {
+      const statusElement = bridgeCards.prototype.querySelector('.bridge-status');
+      statusElement.textContent = liveStatus;
+      statusElement.className = `bridge-status ${liveStatus === 'SAFE' ? 'status-safe' : liveStatus === 'WARNING' ? 'status-warning' : 'status-danger'}`;
+      
+      // Update card border
+      bridgeCards.prototype.className = `bridge-card ${liveStatus === 'WARNING' ? 'warning' : liveStatus === 'DANGEROUS' ? 'danger' : ''}`;
+    }
+  }
+}, 10000);
+</script>
+</body>
+</html>
